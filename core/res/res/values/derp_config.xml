@@ -241,4 +241,7 @@
     <!-- Whether to enable OnePlus Camera hack -->
     <bool name="config_enableOnePlusCameraHack">false</bool>
 
+    <!-- Whether device has fingerprint on power button -->
+    <bool name="config_powerButtonFingerprint">false</bool>
+
 </resources>
