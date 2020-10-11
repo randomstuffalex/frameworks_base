@@ -96,5 +96,6 @@ public class SystemSettings {
         Settings.System.INCALL_FEEDBACK_VIBRATE,
         Settings.System.OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE,
         Settings.System.OMNI_QS_LAYOUT_COLUMNS,
+        Settings.System.QS_LAYOUT_ROWS,
     };
 }
