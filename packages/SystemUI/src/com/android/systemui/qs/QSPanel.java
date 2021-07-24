@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.PointF;
 import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +69,7 @@ import com.android.systemui.statusbar.policy.BrightnessMirrorController.Brightne
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 import com.android.systemui.util.animation.DisappearParameters;
+import com.android.systemui.qs.OPQSFooter;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -440,6 +442,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                     mContext.getContentResolver(), Settings.System.QS_LAYOUT_ROWS, 3,
                     UserHandle.USER_CURRENT);
             getTileLayout().setMinRows(mIsLandscape ? 1 : rows);
+        } else {
+            getTileLayout().setMinRows(2);
         }
     }
 
@@ -572,11 +576,10 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         updateResources();
 
         updateBrightnessMirror();
-
         mIsLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (newConfig.orientation != mLastOrientation) {
             mLastOrientation = newConfig.orientation;
-            switchTileLayout();
+            switchTileLayout(true);
         }
     }
 
@@ -629,7 +632,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             if (mHost != null) setTiles(mHost.getTiles());
             newLayout.setListening(mListening);
             if (needsDynamicRowsAndColumns()) {
-                newLayout.setMinRows(horizontal ? 2 : 1);
+                boolean isLandscape = getResources().getConfiguration().orientation
+                            == Configuration.ORIENTATION_LANDSCAPE;
+                newLayout.setMinRows(horizontal ? 2 : (mMediaHost.getVisible() ? 2 : (isLandscape ? 1 : 3)));
                 // Let's use 3 columns to match the current layout
                 newLayout.setMaxColumns(horizontal ? 3 : TileLayout.NO_MAX_COLUMNS);
             }
