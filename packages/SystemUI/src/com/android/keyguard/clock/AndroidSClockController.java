@@ -232,7 +232,7 @@ public class AndroidSClockController implements ClockPlugin {
     @Override
     public Bitmap getPreview(int width, int height) {
 
-        View previewView = mLayoutInflater.inflate(R.layout.android_s_clock, null);
+        View previewView = mLayoutInflater.inflate(R.layout.android_s_clock_preview, null);
         TextClock previewClock = mView.findViewById(R.id.clock);
         previewClock.setFormat12Hour("hh\nmm");
         previewClock.setFormat24Hour("kk\nmm");
