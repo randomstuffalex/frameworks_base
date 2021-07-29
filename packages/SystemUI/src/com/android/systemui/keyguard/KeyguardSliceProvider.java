@@ -243,13 +243,14 @@ public class KeyguardSliceProvider extends SliceProvider implements
         String currentClock = Settings.Secure.getString(
                 mContentResolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
         boolean isTypeClockSelected = currentClock == null ? false : currentClock.contains("Type");
+        boolean isTwelveClockSelected = currentClock == null ? false : currentClock.contains("Twelve");
         boolean isCenterMusicTickerEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.AMBIENT_MUSIC_TICKER, 1, UserHandle.USER_CURRENT) == 2;
         // Show header if music is playing and the status bar is in the shade state. This way, an
         // animation isn't necessary when pressing power and transitioning to AOD.
         boolean keepWhenShade = mStatusBarState == StatusBarState.SHADE && mMediaIsVisible;
-        return !TextUtils.isEmpty(mMediaTitle) && mMediaIsVisible && (mDozing || keepWhenAwake
-                || keepWhenShade) && isCenterMusicTickerEnabled && !isTypeClockSelected;
+        return !TextUtils.isEmpty(mMediaTitle) && (mMediaIsVisible || isTwelveClockSelected) && (mDozing || keepWhenAwake
+                || keepWhenShade || isTwelveClockSelected) && (isCenterMusicTickerEnabled || isTwelveClockSelected) && !isTypeClockSelected;
     }
 
     protected void addMediaLocked(ListBuilder listBuilder) {
@@ -602,6 +603,9 @@ public class KeyguardSliceProvider extends SliceProvider implements
     }
 
     private void updateMediaStateLocked(MediaMetadata metadata, @PlaybackState.State int state) {
+        String currentClock = Settings.Secure.getString(
+                mContentResolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+        boolean isTwelveClockSelected = currentClock == null ? false : currentClock.contains("Twelve");
         boolean nextVisible = NotificationMediaManager.isPlayingState(state);
         // Get track info from Now Playing notification, if available, and only if there's no playing media notification
         CharSequence npTitle = mMediaManager.getNowPlayingTrack();
@@ -630,7 +634,13 @@ public class KeyguardSliceProvider extends SliceProvider implements
         }
 
         // Set new track info from playing media notification
-        mMediaTitle = title;
+        if (isTwelveClockSelected) {
+            StringBuffer evenSB = new StringBuffer(" ");
+            evenSB.append(title);
+            mMediaTitle = evenSB;
+        } else {
+            mMediaTitle = title;
+        }
         mMediaArtist = nowPlayingAvailable ? null : artist;
         mMediaIsVisible = nextVisible || nowPlayingAvailable;
 
