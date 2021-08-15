@@ -113,7 +113,7 @@
     <dimen name="current_weather_image_size">30dp</dimen>
 
     <!-- Weather condition icon  -->
-    <dimen name="weather_icon_size">24dp</dimen>
+    <dimen name="weather_icon_size">20dp</dimen>
 
     <!-- App Lock -->
     <dimen name="applock_icon_dimension">54dp</dimen>
